@@ -1,32 +1,41 @@
-from flask import Flask, render_template, request, redirect, url_for
+"""
+ _______       _            _     _          ______        _                 _ 
+(_______)     (_)       _  (_)   | |        (____  \      (_)               | |
+ _______  ____ _  ___ _| |_ _  __| |_____    ____)  ) ____ _ _____ ____   __| |
+|  ___  |/ ___) |/___|_   _) |/ _  | ___ |  |  __  ( / ___) (____ |  _ \ / _  |
+| |   | | |   | |___ | | |_| ( (_| | ____|  | |__)  ) |   | / ___ | | | ( (_| |
+|_|   |_|_|   |_(___/   \__)_|\____|_____)  |______/|_|   |_\_____|_| |_|\____|
+    
+Auteur: jefferya(jefferya.pro@gmail.com) 
+app.py(Ɔ) 2023
+Description : Saisissez la description puis « Tab »
+Créé le :  lundi 6 novembre 2023 à 7:46:44 
+Dernière modification : lundi 6 novembre 2023 à 7:47:52
+"""
+from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://sqltps1:Disneychannel911!@sql01-tps-dev-scus.database.windows.net/tps_aggroupdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'your-azure-sql-connection-string'
 db = SQLAlchemy(app)
 
-class Personnel(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    role = db.Column(db.String(50))
+class ITPersonnel(db.Model):
+    # Define your model with the appropriate fields
 
-@app.route('/')
-def home():
-    return render_template('home.html')
+ class ITDepartments(db.Model):
+    # Define your model with the appropriate fields
+ 
+  @app.route('/')
+  def index():
+    personnel = ITPersonnel.query.all()
+    departments = ITDepartments.query.all()
+    return render_template('index.html', personnel=personnel, departments=departments)
 
-@app.route('/personnel')
-def personnel():
-    personnel = Personnel.query.all()
-    return render_template('personnel.html', personnel=personnel)
-
-@app.route('/update_role', methods=['POST'])
-def update_role():
-    personnel_id = request.form.get('personnel_id')
-    new_role = request.form.get('new_role')
-    personnel = Personnel.query.get(personnel_id)
-    personnel.role = new_role
-    db.session.commit()
-    return redirect(url_for('personnel'))
-
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/assign-rights', methods=['POST'])
+def assign_rights():
+    # Extract data from form
+    personnel_id = request.form.get('personnel')
+    department_id = request.form.get('department')
+    # Update database with the new rights
+    # ...
+    return 'Rights assigned successfully'
