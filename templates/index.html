@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assign Rights</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #333;
+        }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            height: 50px;
+            margin-right: 20px;
+        }
+        .header h1 {
+            font-size: 20px;
+            color: #4CAF50;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        /* ... rest of your styles ... */
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="/images/logo.png" alt="Logo">
+        <h1>Texas Pipe & Supply IT Department SQL Server Personnel Right Assignments</h1>
+    </div>
+    <form action="/assign-rights" method="post">
+        <table>
+            <tr>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Position</th>
+                <th>Email</th>
+                <th>Remarks</th>
+                <th>Database Privileges</th>
+            </tr>
+            {% for person in personnel %}
+            <tr>
+                <td>{{ person.Last_Name }}</td>
+                <td>{{ person.First_Name }}</td>
+                <td>{{ person.Position }}</td>
+                <td>{{ person.Email }}</td>
+                <td>
+                    <textarea name="remarks_{{ person.Last_Name }}"></textarea>
+                </td>
+                <td>
+                    <select name="privileges_{{ person.Last_Name }}">
+                        <option value="">Select...</option>
+                        {% for dept in departments %}
+                            <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button type="submit">Assign Rights</button>
+    </form>
+</body>
+</html>
