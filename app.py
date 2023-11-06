@@ -10,6 +10,10 @@ class Personnel(db.Model):
     name = db.Column(db.String(50))
     role = db.Column(db.String(50))
 
+@app.route('/')
+def home():
+    return render_template('home.html')
+
 @app.route('/personnel')
 def personnel():
     personnel = Personnel.query.all()
