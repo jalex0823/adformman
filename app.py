@@ -2,6 +2,7 @@ from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 import pymssql
 from sqlalchemy.exc import SQLAlchemyError
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://sqltps1:Disneychannel911!@privatelink-database-windows-net:1433/tps_aggroupdb'
@@ -9,10 +10,21 @@ db = SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 class ITDepartments(db.Model):
-    # ... your model definition ...
+    __tablename__ = 'ITDepartments'
+    Department = db.Column(db.String(255), primary_key=True)
+    Responsibilities = db.Column(db.String(255), nullable=False)
+    Assumed_Database_Access = db.Column(db.String(255), nullable=False)
+    Remarks = db.Column(db.String(255), nullable=True)
+    AG_ID = db.Column(db.String(255), nullable=True)
 
 class ITPersonnel(db.Model):
-    # ... your model definition ...
+    __tablename__ = 'ITPersonnel'
+    Last_Name = db.Column(db.String(255), primary_key=True)
+    First_Name = db.Column(db.String(255), nullable=False)
+    Position = db.Column(db.String(255), nullable=False)
+    Email = db.Column(db.String(255), nullable=False)
+    Database_Privileges = db.Column('Database Privileges', db.String(255), nullable=True)
+    Remarks = db.Column(db.String(255), nullable=True)
 
 @app.route('/')
 def index():
@@ -46,8 +58,8 @@ def assign_rights():
                     if remarks_key in form_data:
                         personnel.Remarks = form_data[remarks_key]
 
-        # Commit the changes to the database
-        db.session.commit()
+                # Commit the changes to the database
+                db.session.commit()
 
         return 'Rights assigned successfully'
     except SQLAlchemyError as e:
