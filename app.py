@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://sqltps1:Disneychannel911!@privatelink-database-windows-net:1433/tps_aggroupdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://sqltps1:Disneychannel911!@Server=tcp:sql01-tps-dev-scus.database.windows.net,1433;Initial Catalog=tps_aggroupdb;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication="Active Directory Default";'
 db = SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
