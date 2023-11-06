@@ -2,7 +2,7 @@ from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://sqltps1:Disneychannel911!@sql01-tps-dev-scus.database.windows.net:1433/tps_aggroupdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://sqltps1:Disneychannel911!@privatelink-database-windows-net:1433/tps_aggroupdb'
 db = SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
