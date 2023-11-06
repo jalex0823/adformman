@@ -10,13 +10,13 @@ Auteur: jefferya(jefferya.pro@gmail.com)
 app.py(Ɔ) 2023
 Description : Saisissez la description puis « Tab »
 Créé le :  lundi 6 novembre 2023 à 7:46:44 
-Dernière modification : lundi 6 novembre 2023 à 7:47:52
+Dernière modification : lundi 6 novembre 2023 à 8:04:04
 """
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'your-azure-sql-connection-string'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'Server=tcp:sql01-tps-dev-scus.database.windows.net,1433;Initial Catalog=tps_aggroupdb;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication="Active Directory Default";'
 db = SQLAlchemy(app)
 
 class ITPersonnel(db.Model):
