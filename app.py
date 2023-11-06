@@ -2,14 +2,9 @@ from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-<<<<<<< HEAD
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://sqltps1:Disneychannel911!@sql01-tps-dev-scus.database.windows.net:1433/tps_aggroupdb'
-=======
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://sqltps1:Disneychannel911!@sql01-tps-dev-scus.database.windows.net:1433/tps_aggroupdb?driver=ODBC+Driver+17+for+SQL+Server'
->>>>>>> ac26e51476da2846a7c4fb4a61bb1e99df34e170
 db = SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 
 class ITDepartments(db.Model):
     __tablename__ = 'ITDepartments'
@@ -44,14 +39,12 @@ def assign_rights():
         if key.startswith('privileges_'):
             # Get the person's last name from the key
             last_name = key[len('privileges_'):]
-
             # Get the person's record
             personnel = ITPersonnel.query.filter_by(Last_Name=last_name).first()
 
             if personnel:
                 # Update the person's database privileges
                 personnel.Database_Privileges = value
-
                 # Update the person's remarks
                 remarks_key = 'remarks_' + last_name
                 if remarks_key in form_data:
