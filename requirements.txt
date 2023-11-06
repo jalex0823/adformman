@@ -10,6 +10,7 @@ fastapi==0.103.2
 flask
 flask_sqlalchemy
 greenlet==3.0.1
+gunicorn
 idna==3.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
@@ -36,3 +37,4 @@ typing_extensions==4.8.0
 tzdata==2023.3
 urllib3==2.0.4
 Werkzeug==3.0.0
+
