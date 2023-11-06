@@ -51,7 +51,10 @@ def assign_rights():
                     personnel.Remarks = form_data[remarks_key]
 
     # Commit the changes to the database
+    try:
     db.session.commit()
+except Exception as e:
+    print(f"Error committing changes: {e}")
 
     return 'Rights assigned successfully'
 
