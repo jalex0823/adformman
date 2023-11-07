@@ -1,15 +1,8 @@
-from flask import Flask
+from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import SQLAlchemyError
-import urllib
-import os
-
-params = urllib.parse.quote_plus('DRIVER={ODBC Driver 17 for SQL Server};tcp:sql01-tps-dev-scus.database.windows.net,1433;DATABASE=tps_aggroupdb;UID=sqltps1;PWD=Disneychannel911!')
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % params
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://sqltps1:Disneychannel911!@sql01-tps-dev-scus.database.windows.net:1433/tps_aggroupdb?driver=ODBC+Driver+17+for+SQL+Server'
 db = SQLAlchemy(app)
 
 class ITDepartments(db.Model):
@@ -28,53 +21,23 @@ class ITPersonnel(db.Model):
     Email = db.Column(db.String(255), nullable=False)
     Database_Privileges = db.Column('Database Privileges', db.String(255), nullable=True)
     Remarks = db.Column(db.String(255), nullable=True)
-    @app.route('/')
-    def index():
-        try:
-            personnel = ITPersonnel.query.all()
-            departments = ITDepartments.query.all()
-            return render_template('index.html', personnel=personnel, departments=departments)
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            return f"An error occurred: {e}", 500
 
-    @app.route('/assign-rights', methods=['POST'])
-    def assign_rights():
-        try:
-            # Extract form data
-            form_data = request.form
+@app.route('/')
+def home():
+    personnel = ITPersonnel.query.all()
+    departments = ITDepartments.query.all()
+    return render_template('index.html', personnel=personnel, departments=departments)
 
-            # For each person in the form data
-            for key, value in form_data.items():
-                if key.startswith('privileges_'):
-                    # Get the person's last name from the key
-                    last_name = key[len('privileges_'):]
-                    # Get the person's record
-                    personnel = ITPersonnel.query.filter_by(Last_Name=last_name).first()
+@app.route('/assign-rights', methods=['POST'])
+def assign_rights():
+    for key, value in request.form.items():
+        if key.startswith('privileges_'):
+            last_name = key[len('privileges_'):]
+            personnel = ITPersonnel.query.get(last_name)
+            if personnel:
+                personnel.Database_Privileges = value
+    db.session.commit()
+    return 'Rights assigned successfully'
 
-                    if personnel:
-                        # Update the person's database privileges
-                        personnel.Database_Privileges = value
-                        # Update the person's remarks
-                        remarks_key = 'remarks_' + last_name
-                        if remarks_key in form_data:
-                            personnel.Remarks = form_data[remarks_key]
-
-                    # Commit the changes to the database
-                    db.session.commit()
-
-            return 'Rights assigned successfully'
-        except SQLAlchemyError as e:
-            db.session.rollback()
-            return f"An error occurred: {e}", 500
-
-    @app.route('/test')
-    def test_connection():
-        try:
-            first_department = ITDepartments.query.first()
-            return f"First department is: {first_department.Department}"
-        except Exception as e:
-            return str(e)
-
-    if __name__ == "__main__":
-        app.run(port=5001, debug=True)
+if __name__ == '__main__':
+    app.run(port=5001)
