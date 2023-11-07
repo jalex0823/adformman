@@ -7,12 +7,18 @@
             font-family: Arial, sans-serif;
             font-size: 14px;
             color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
         }
         .header {
             display: flex;
             justify-content: center;
             align-items: center;
             margin-bottom: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
         }
         .header img {
             height: 50px;
@@ -23,9 +29,11 @@
             color: #4CAF50;
         }
         table {
-            width: 100%;
-            margin-bottom: 20px;
+            width: 90%;
+            margin: 20px auto;
             border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
         }
         th, td {
             border: 1px solid #ddd;
@@ -36,45 +44,73 @@
             background-color: #4CAF50;
             color: white;
         }
-        /* ... rest of your styles ... */
-    </style>
-</head>
-<body>
-    <div class="header">
-        <img src="/images/logo.png" alt="Logo">
-        <h1>Texas Pipe & Supply IT Department SQL Server Personnel Right Assignments</h1>
-    </div>
-    <form action="/assign-rights" method="post">
-        <table>
-            <tr>
-                <th>Last Name</th>
-                <th>First Name</th>
-                <th>Position</th>
-                <th>Email</th>
-                <th>Remarks</th>
-                <th>Database Privileges</th>
-            </tr>
-            {% for person in personnel %}
-            <tr>
-                <td>{{ person.Last_Name }}</td>
-                <td>{{ person.First_Name }}</td>
-                <td>{{ person.Position }}</td>
-                <td>{{ person.Email }}</td>
-                <td>
-                    <textarea name="remarks_{{ person.Last_Name }}"></textarea>
-                </td>
-                <td>
-                    <select name="privileges_{{ person.Last_Name }}">
-                        <option value="">Select...</option>
-                        {% for dept in departments %}
-                            <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-        <button type="submit">Assign Rights</button>
-    </form>
-</body>
-</html>
+        button {
+            display: block;
+            width: 200px;
+            height: 40px;
+            margin: 20px auto;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+            </style>
+            <script>
+                window.onload = function() {
+                    var selects = document.querySelectorAll('select');
+                    selects.forEach(function(select) {
+                        select.addEventListener('change', function(e) {
+                            navigator.clipboard.writeText(e.target.value).then(function() {
+                                console.log('Copying to clipboard was successful!');
+                            }, function(err) {
+                                console.error('Could not copy text: ', err);
+                            });
+                        });
+                    });
+                };
+            </script>
+        </head>
+        <body>
+            <div class="header">
+                <img src="/images/logo.png" alt="Logo">
+                <h1>Texas Pipe & Supply IT Department SQL Server Personnel Right Assignments</h1>
+            </div>
+            <form action="/assign-rights" method="post">
+                <table>
+                    <tr>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th>Position</th>
+                        <th>Email</th>
+                        <th>Remarks</th>
+                        <th>Database Privileges</th>
+                    </tr>
+                    {% for person in personnel %}
+                    <tr>
+                        <td>{{ person.Last_Name }}</td>
+                        <td>{{ person.First_Name }}</td>
+                        <td>{{ person.Position }}</td>
+                        <td>{{ person.Email }}</td>
+                        <td>
+                            <textarea name="remarks_{{ person.Last_Name }}"></textarea>
+                        </td>
+                        <td>
+                            <select name="privileges_{{ person.Last_Name }}">
+                                <option value="">Select...</option>
+                                {% for dept in departments %}
+                                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <button type="submit">Assign Rights</button>
+            </form>
+        </body>
+        </html>
