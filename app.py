@@ -1,10 +1,13 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
+import urllib
 import os
 
+params = urllib.parse.quote_plus('DRIVER={ODBC Driver 17 for SQL Server};SERVER=sql01-tps-dev-scus.privatelink.database.windows.net;DATABASE=database;UID=sqltps1;PWD=Disneychannel911!')
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://sqltps1:Disneychannel911!@sql01-tps-dev-scus.privatelink.database.windows.net:1433/database?driver=ODBC+Driver+17+for+SQL+Server'
+app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % params
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
