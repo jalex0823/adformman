@@ -1,12 +1,13 @@
-from flask import Flask, request, render_template
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import pymssql
 from sqlalchemy.exc import SQLAlchemyError
 import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://sqltps1:Disneychannel911!@sql01-tps-dev-scus.database.windows.net:1433/tps_aggroupdb?driver=ODBC+Driver+17+for+SQL+Server'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 
 class ITDepartments(db.Model):
     __tablename__ = 'ITDepartments'
