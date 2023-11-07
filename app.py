@@ -4,9 +4,9 @@ from sqlalchemy.exc import SQLAlchemyError
 import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://sqltps1:Disneychannel911!@sql01-tps-dev-scus.privatelink.database.windows.net:1433/database?driver=ODBC+Driver+17+for+SQL+Server'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://sqltps1:Disneychannel911!@sql01-tps-dev-scus.privatelink.database.windows.net:1433/database?driver=ODBC+Driver+17+for+SQL+Server'
 db = SQLAlchemy(app)
 
 class ITDepartments(db.Model):
