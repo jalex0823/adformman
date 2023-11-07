@@ -4,8 +4,8 @@ from sqlalchemy.exc import SQLAlchemyError
 import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://sqltps1:Disneychannel911!@sql01-tps-dev-scus.database.windows.net:1433/tps_aggroupdb?driver=ODBC+Driver+17+for+SQL+Server'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://sqltps1:Disneychannel911!@sql01-tps-dev-scus.privatelink.database.windows.net:1433/database?driver=ODBC+Driver+17+for+SQL+Server'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
 
@@ -65,6 +65,14 @@ def assign_rights():
     except SQLAlchemyError as e:
         db.session.rollback()
         return f"An error occurred: {e}", 500
+
+@app.route('/test')
+def test_connection():
+    try:
+        first_department = ITDepartments.query.first()
+        return f"First department is: {first_department.Department}"
+    except Exception as e:
+        return str(e)
 
 if __name__ == "__main__":
     app.run(port=5001, debug=True)
