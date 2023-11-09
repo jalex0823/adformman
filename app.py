@@ -46,8 +46,7 @@ def assign_rights():
         return 'Rights assigned successfully'
     except Exception as e:
         app.logger.error(f"Error occurred: {e}")
-        return "An error occurred", 500
-
+        return f"An error occurred: {str(e)}", 500
 if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0', port=port)
