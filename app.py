@@ -1,8 +1,9 @@
 from flask import Flask, request, render_template
+import os
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://sqltps1:Disneychannel911!@sql01-tps-dev-scus.database.windows.net:1433/tps_aggroupdb?driver=ODBC+Driver+17+for+SQL+Server'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 db = SQLAlchemy(app)
 
 class ITDepartments(db.Model):
@@ -40,7 +41,6 @@ def assign_rights():
     return 'Rights assigned successfully'
 
 if __name__ == '__main__':
-    import os
     port = int(os.getenv('PORT', 5001))
     app.debug = True
     app.run(host='0.0.0.0', port=port)
