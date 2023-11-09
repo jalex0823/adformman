@@ -25,20 +25,28 @@ class ITPersonnel(db.Model):
 
 @app.route('/')
 def home():
-    personnel = ITPersonnel.query.all()
-    departments = ITDepartments.query.all()
-    return render_template('index.html', personnel=personnel, departments=departments)
+    try:
+        personnel = ITPersonnel.query.all()
+        departments = ITDepartments.query.all()
+        return render_template('index.html', personnel=personnel, departments=departments)
+    except Exception as e:
+        app.logger.error(f"Error occurred: {e}")
+        return "An error occurred", 500
 
 @app.route('/assign-rights', methods=['POST'])
 def assign_rights():
-    for key, value in request.form.items():
-        if key.startswith('privileges_'):
-            last_name = key[len('privileges_'):]
-            personnel = ITPersonnel.query.get(last_name)
-            if personnel:
-                personnel.Database_Privileges = value
-    db.session.commit()
-    return 'Rights assigned successfully'
+    try:
+        for key, value in request.form.items():
+            if key.startswith('privileges_'):
+                last_name = key[len('privileges_'):]
+                personnel = ITPersonnel.query.get(last_name)
+                if personnel:
+                    personnel.Database_Privileges = value
+        db.session.commit()
+        return 'Rights assigned successfully'
+    except Exception as e:
+        app.logger.error(f"Error occurred: {e}")
+        return "An error occurred", 500
 
 if __name__ == '__main__':
     app.debug = True
