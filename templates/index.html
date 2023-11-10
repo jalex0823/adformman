@@ -70,7 +70,7 @@
                         <td>{{ person.Email }}</td>
                                     <td class="privileges">
                                         <select name="privileges_{{ person.Last_Name }}">
-                                            {% for privilege in assumed_database_access %}
+                                            {% for privilege in Assumed_Database_Access %}
                                             <option value="{{ privilege }}">{{ privilege }}</option>
                                             {% endfor %}
                                         </select>
