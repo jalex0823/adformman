@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Assign Rights</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <title>SQL Server Personnel Right Assignments</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #f4f4f4;
             font-family: Arial, sans-serif;
-            color: #4CAF50;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
         }
         .header {
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: start;
             margin-bottom: 20px;
             padding: 20px;
             background-color: #fff;
@@ -24,85 +25,75 @@
         }
         .header h1 {
             font-size: 20px;
+            color: #4CAF50;  /* Change the font color to match the button and title */
         }
-        .container {
-            margin: 20px auto;
-            background-color: #fff;
-            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
-            padding: 20px;
+        .table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
         }
-        .btn-primary, .thead-dark th {
-            background-color: #4CAF50;
+        .table th {
+            background-color: #4CAF50;  /* Change the background color to match the button and title */
+            color: white;
         }
-        .container *:not(.btn) {
-            border: 1px solid #4CAF50;
+        .table td, .table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .table td.privileges {
+            width: 20%;  /* Make the Privileges column smaller */
+        }
+        .table td.remarks {
+            width: 80%;  /* Make the Remarks column wider */
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
-        <h1>Texas Pipe & Supply IT Department SQL Server Personnel Right Assignments</h1>
-    </div>
     <div class="container">
         <form action="/assign-rights" method="post" onsubmit="return validateForm()">
             <table class="table">
-                <thead class="thead-dark">
+                <thead>
                     <tr>
-                        <th>#</th>
                         <th>Last Name</th>
                         <th>First Name</th>
                         <th>Position</th>
                         <th>Email</th>
-                        <th>Database Privileges</th>
-                        <th>Remarks</th>
+                        <th class="privileges">Database Privileges</th>
+                        <th class="remarks">Remarks</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for person in personnel %}
                     <tr>
-                        <td>{{ loop.index }}</td>
                         <td>{{ person.Last_Name }}</td>
                         <td>{{ person.First_Name }}</td>
                         <td>{{ person.Position }}</td>
                         <td>{{ person.Email }}</td>
-                        <td>
-                            <select class="form-control" name="privileges_{{ person.Last_Name }}" required>
-                                <option value="">Select...</option>
-                                {% for dept in departments %}
-                                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="button" onclick="appendPrivilege('{{ person.Last_Name }}')">Push</button>
-                        </td>
-                        <td>
-                            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" required></textarea>
-                        </td>
+                        <td class="privileges"><input type="text" name="privileges_{{ person.Last_Name }}" value="{{ person.Database_Privileges }}"></td>
+                        <td class="remarks"><input type="text" name="remarks_{{ person.Last_Name }}" value="{{ person.Remarks }}"></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <button type="submit" class="btn btn-primary">Assign Rights</button>
+            <button class="button" type="submit">Add More Rights</button>
         </form>
     </div>
+<script>
+function validateForm() {
+    // Get all privilege inputs
+    var privilegeInputs = document.querySelectorAll('input[name^="privileges_"]');
 
-    <script>
-    function validateForm() {
-        var textareas = document.querySelectorAll('textarea');
-        for (var i = 0; i < textareas.length; i++) {
-            if (textareas[i].value.trim() === '') {
-                alert('Please fill out the remarks for all personnel.');
-                return false;
-            }
+    // Check if any privilege field is empty
+    for (var i = 0; i < privilegeInputs.length; i++) {
+        if (privilegeInputs[i].value == "") {
+            alert("Please assign a privilege to every person.");
+            return false;
         }
-        return true;
     }
 
-    function appendPrivilege(lastName) {
-        var privilege = document.querySelector(`select[name="privileges_${lastName}"]`).value;
-        var remarks = document.querySelector(`textarea[name="remarks_${lastName}"]`);
-        remarks.value += privilege + "\n";
-    }
-    </script>
+    return true;
+}
+</script>
+
 </body>
 </html>
