@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
 import os
+import traceback
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__, static_folder='static')
@@ -15,7 +16,6 @@ class ITDepartments(db.Model):
     AG_ID = db.Column(db.String(255), nullable=True)
 
 class ITPersonnel(db.Model):
-    # ...
     __tablename__ = 'ITPersonnel'
     Last_Name = db.Column(db.String(255), primary_key=True)
     First_Name = db.Column(db.String(255), nullable=False)
@@ -31,7 +31,7 @@ def home():
         departments = ITDepartments.query.all()
         return render_template('index.html', personnel=personnel, departments=departments)
     except Exception as e:
-        app.logger.error(f"Error occurred: {e}")
+        app.logger.error(f"Error occurred: {e}\n{traceback.format_exc()}")
         return "An error occurred", 500
 
 @app.route('/assign-rights', methods=['POST'])
@@ -46,8 +46,10 @@ def assign_rights():
         db.session.commit()
         return 'Rights assigned successfully'
     except Exception as e:
-        app.logger.error(f"Error occurred: {e}")
+        app.logger.error(f"Error occurred: {e}\n{traceback.format_exc()}")
         return f"An error occurred: {str(e)}", 500
+
 if __name__ == '__main__':
     app.debug = True
+    port = 5000  # Define the port variable
     app.run(host='0.0.0.0', port=port)
