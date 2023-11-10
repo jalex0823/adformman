@@ -31,23 +31,19 @@
             box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
             padding: 20px;
         }
-        .btn-primary, .thead-dark th {
-            background-color: #4CAF50; /* Set the button and table header color to match the font color */
+        .btn-primary {
+            background-color: #4CAF50; /* Set the button color to match the font color */
         }
     </style>
-    <script>
-        function appendPrivilege(lastName) {
-            var privilege = document.querySelector(`select[name="privileges_${lastName}"]`).value;
-            var remarks = document.querySelector(`textarea[name="remarks_${lastName}"]`);
-            remarks.value += privilege + "\n";
-        }
-    </script>
 </head>
 <body>
     <div class="header">
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
         <h1>Texas Pipe & Supply IT Department SQL Server Personnel Right Assignments</h1>
     </div>
+    <!-- ... rest of your HTML ... -->
+</body>
+</html>
     <div class="container">
         <form action="/assign-rights" method="post" onsubmit="return validateForm()">
             <table class="table">
@@ -58,33 +54,32 @@
                         <th>First Name</th>
                         <th>Position</th>
                         <th>Email</th>
-                        <th>Database Privileges</th>
                         <th>Remarks</th>
+                        <th>Database Privileges</th>
                     </tr>
                 </thead>
-<tbody>
-    {% for person in personnel %}
-    <tr>
-        <td>{{ loop.index }}</td>
-        <td>{{ person.Last_Name }}</td>
-        <td>{{ person.First_Name }}</td>
-        <td>{{ person.Position }}</td>
-        <td>{{ person.Email }}</td>
-        <td>
-            <select class="form-control" name="privileges_{{ person.Last_Name }}" required>
-                <option value="">Select...</option>
-                {% for dept in departments %}
-                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
-                {% endfor %}
-            </select>
-            <button type="button" onclick="appendPrivilege('{{ person.Last_Name }}')">Push</button>
-        </td>
-        <td>
-            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" required></textarea>
-        </td>
-    </tr>
-    {% endfor %}
-</tbody>
+                <tbody>
+                    {% for person in personnel %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ person.Last_Name }}</td>
+                        <td>{{ person.First_Name }}</td>
+                        <td>{{ person.Position }}</td>
+                        <td>{{ person.Email }}</td>
+                        <td>
+                            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" required></textarea>
+                        </td>
+                        <td>
+                            <select class="form-control" name="privileges_{{ person.Last_Name }}" required>
+                                <option value="">Select...</option>
+                                {% for dept in departments %}
+                                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
             <button type="submit" class="btn btn-primary">Assign Rights</button>
         </form>
