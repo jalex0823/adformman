@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+from flask_mail import Mail, Message
 import os
 import traceback
 from flask_sqlalchemy import SQLAlchemy
@@ -6,8 +7,13 @@ import werkzeug.exceptions
 
 app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'your-email@example.com'  # replace with your email
+app.config['MAIL_PASSWORD'] = 'Disneychannel911!'  # replace with your password
+mail = Mail(app)
 db = SQLAlchemy(app)
-
 class ITDepartments(db.Model):
     __tablename__ = 'ITDepartments'
     Department = db.Column(db.String(255), primary_key=True)
@@ -30,7 +36,6 @@ def home():
     personnel = ITPersonnel.query.all()
     departments = ITDepartments.query.all()
     return render_template('index.html', personnel=personnel, departments=departments)
-
 @app.route('/assign-rights', methods=['POST'])
 def assign_rights():
     for person in ITPersonnel.query.all():
@@ -42,19 +47,18 @@ def assign_rights():
         if remarks:
             person.Remarks = remarks
     db.session.commit()
+
+    # Send email notification
+    send_email()
+
     return 'Rights assigned successfully'
 
-@app.errorhandler(Exception)
-def handle_exception(e):
-    # pass through HTTP errors
-    if isinstance(e, werkzeug.exceptions.HTTPException):
-        return e
-
-    # now you're handling non-HTTP exceptions only
-    app.logger.error(f"Error occurred: {e}\n{traceback.format_exc()}")
-    return "An error occurred", 500
+def send_email():
+    msg = Message('Rights Assigned',
+                  sender='genev@texaspipe.com',  # replace with your email
+                  recipients=['jefferya@texaspipe.com'])
+    msg.body = 'The rights have been successfully assigned.'
+    mail.send(msg)
 
 if __name__ == '__main__':
-    app.debug = True
-    port = 5000  # Define the port variable
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
