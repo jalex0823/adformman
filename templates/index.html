@@ -78,41 +78,29 @@
                         <th>Remarks</th>
                     </tr>
                 </thead>
-<tbody>
-    {% for person in personnel %}
-    <tr>
-        <td>{{ loop.index }}</td>
-        <td>{{ person.Last_Name }}</td>
-        <td>{{ person.First_Name }}</td>
-        <td>{{ person.Position }}</td>
-        <td>{{ person.Email }}</td>
-        <td>
-            <select class="form-control" name="privileges_{{ person.Last_Name }}" required>
-                <option value="">Select...</option>
-                {% for dept in departments %}
-                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
-                {% endfor %}
-            </select>
-            <button type="button" onclick="appendPrivilege('{{ person.Last_Name }}')">Push</button>
-        </td>
-        <td>
-            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" required></textarea>
-        </td>
-    </tr>
-    {% endfor %}
-</tbody>
-                {% for dept in departments %}
-                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
-                {% endfor %}
-            </select>
-            <button type="button" onclick="appendPrivilege('{{ person.Last_Name }}')">Push</button>
-        </td>
-        <td>
-            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" required></textarea>
-        </td>
-    </tr>
-    {% endfor %}
-</tbody>
+                <tbody>
+                    {% for person in personnel %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ person.Last_Name }}</td>
+                        <td>{{ person.First_Name }}</td>
+                        <td>{{ person.Position }}</td>
+                        <td>{{ person.Email }}</td>
+                        <td>
+                            <select class="form-control" name="privileges_{{ person.Last_Name }}" required>
+                                <option value="">Select...</option>
+                                {% for dept in departments %}
+                                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" onclick="appendPrivilege('{{ person.Last_Name }}')">Push</button>
+                        </td>
+                        <td>
+                            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" required></textarea>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
             <button type="submit" class="btn btn-primary">Assign Rights</button>
         </form>
