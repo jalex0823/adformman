@@ -44,73 +44,70 @@
             background-color: #4CAF50;
             color: white;
         }
-        button {
-            display: block;
-            width: 200px;
-            height: 40px;
-            margin: 20px auto;
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-            </style>
-            <script>
-                window.onload = function() {
-                    var selects = document.querySelectorAll('select');
-                    selects.forEach(function(select) {
-                        select.addEventListener('change', function(e) {
-                            navigator.clipboard.writeText(e.target.value).then(function() {
-                                console.log('Copying to clipboard was successful!');
-                            }, function(err) {
-                                console.error('Could not copy text: ', err);
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+        <h1>Texas Pipe & Supply IT Department SQL Server Personnel Right Assignments</h1>
+    </div>
+    <form action="/assign-rights" method="post" onsubmit="return validateForm()">
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Position</th>
+                <th>Email</th>
+                <th>Remarks</th>
+                <th>Database Privileges</th>
+            </tr>
+            {% for person in personnel %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ person.Last_Name }}</td>
+                <td>{{ person.First_Name }}</td>
+                <td>{{ person.Position }}</td>
+                <td>{{ person.Email }}</td>
+                <td>
+                    <textarea name="remarks_{{ person.Last_Name }}"></textarea>
+                                <td>
+                                    <select name="privileges_{{ person.Last_Name }}">
+                                        <option value="">Select...</option>
+                                        {% for dept in departments %}
+                                            <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        <button type="submit">Assign Rights</button>
+                    </form>
+                </body>
+                </html>
+                <script>
+                    window.onload = function() {
+                        var selects = document.querySelectorAll('select');
+                        selects.forEach(function(select) {
+                            select.addEventListener('change', function(e) {
+                                navigator.clipboard.writeText(e.target.value).then(function() {
+                                    console.log('Copying to clipboard was successful!');
+                                }, function(err) {
+                                    console.error('Could not copy text: ', err);
+                                });
                             });
                         });
-                    });
-                };
-            </script>
-        </head>
-        <body>
-            <div class="header">
-                <img src="/images/logo.png" alt="Logo">
-                <h1>Texas Pipe & Supply IT Department SQL Server Personnel Right Assignments</h1>
-            </div>
-            <form action="/assign-rights" method="post">
-                <table>
-                    <tr>
-                        <th>Last Name</th>
-                        <th>First Name</th>
-                        <th>Position</th>
-                        <th>Email</th>
-                        <th>Remarks</th>
-                        <th>Database Privileges</th>
-                    </tr>
-                    {% for person in personnel %}
-                    <tr>
-                        <td>{{ person.Last_Name }}</td>
-                        <td>{{ person.First_Name }}</td>
-                        <td>{{ person.Position }}</td>
-                        <td>{{ person.Email }}</td>
-                        <td>
-                            <textarea name="remarks_{{ person.Last_Name }}"></textarea>
-                        </td>
-                        <td>
-                            <select name="privileges_{{ person.Last_Name }}">
-                                <option value="">Select...</option>
-                                {% for dept in departments %}
-                                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-                <button type="submit">Assign Rights</button>
-            </form>
-        </body>
-        </html>
+                    };
+
+                    function validateForm() {
+                        var selects = document.querySelectorAll('select');
+                        for (var i = 0; i < selects.length; i++) {
+                            if (selects[i].value === '') {
+                                alert('Please select a privilege for all personnel.');
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                </script>

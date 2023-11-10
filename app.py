@@ -2,7 +2,7 @@ from flask import Flask, request, render_template
 import os
 from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 db = SQLAlchemy(app)
 
@@ -15,6 +15,7 @@ class ITDepartments(db.Model):
     AG_ID = db.Column(db.String(255), nullable=True)
 
 class ITPersonnel(db.Model):
+    # ...
     __tablename__ = 'ITPersonnel'
     Last_Name = db.Column(db.String(255), primary_key=True)
     First_Name = db.Column(db.String(255), nullable=False)
