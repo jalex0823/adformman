@@ -2,6 +2,7 @@ from flask import Flask, request, render_template
 import os
 import traceback
 from flask_sqlalchemy import SQLAlchemy
+import werkzeug.exceptions
 
 app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
@@ -26,28 +27,30 @@ class ITPersonnel(db.Model):
 
 @app.route('/')
 def home():
-    try:
-        personnel = ITPersonnel.query.all()
-        departments = ITDepartments.query.all()
-        return render_template('index.html', personnel=personnel, departments=departments)
-    except Exception as e:
-        app.logger.error(f"Error occurred: {e}\n{traceback.format_exc()}")
-        return "An error occurred", 500
+    personnel = ITPersonnel.query.all()
+    departments = ITDepartments.query.all()
+    return render_template('index.html', personnel=personnel, departments=departments)
 
 @app.route('/assign-rights', methods=['POST'])
 def assign_rights():
-    try:
-        for key, value in request.form.items():
-            if key.startswith('privileges_'):
-                last_name = key[len('privileges_'):]
-                personnel = ITPersonnel.query.get(last_name)
-                if personnel:
-                    personnel.Database_Privileges = value
-        db.session.commit()
-        return 'Rights assigned successfully'
-    except Exception as e:
-        app.logger.error(f"Error occurred: {e}\n{traceback.format_exc()}")
-        return f"An error occurred: {str(e)}", 500
+    for key, value in request.form.items():
+        if key.startswith('privileges_'):
+            last_name = key[len('privileges_'):]
+            personnel = ITPersonnel.query.get(last_name)
+            if personnel:
+                personnel.Database_Privileges = value
+    db.session.commit()
+    return 'Rights assigned successfully'
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # pass through HTTP errors
+    if isinstance(e, werkzeug.exceptions.HTTPException):
+        return e
+
+    # now you're handling non-HTTP exceptions only
+    app.logger.error(f"Error occurred: {e}\n{traceback.format_exc()}")
+    return "An error occurred", 500
 
 if __name__ == '__main__':
     app.debug = True
