@@ -33,12 +33,14 @@ def home():
 
 @app.route('/assign-rights', methods=['POST'])
 def assign_rights():
-    for key, value in request.form.items():
-        if key.startswith('privileges_'):
-            last_name = key[len('privileges_'):]
-            personnel = ITPersonnel.query.get(last_name)
-            if personnel:
-                personnel.Database_Privileges = value
+    for person in ITPersonnel.query.all():
+        last_name = person.Last_Name
+        privileges = request.form.get(f'privileges_{last_name}')
+        remarks = request.form.get(f'remarks_{last_name}')
+        if privileges:
+            person.Database_Privileges = privileges
+        if remarks:
+            person.Remarks = remarks
     db.session.commit()
     return 'Rights assigned successfully'
 
