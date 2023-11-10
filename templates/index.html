@@ -6,8 +6,8 @@
     <style>
         body {
             background-color: #f4f4f4;
-            font-family: Arial, sans-serif; /* Set the font for the whole page */
-            color: #4CAF50; /* Set the font color for the whole page */
+            font-family: Arial, sans-serif;
+            color: #4CAF50;
         }
         .header {
             display: flex;
@@ -32,9 +32,8 @@
             padding: 20px;
         }
         .btn-primary, .thead-dark th {
-            background-color: #4CAF50; /* Set the button and table header color to match the font color */
+            background-color: #4CAF50;
         }
-        /* Add a border to all items except the button */
         .container *:not(.btn) {
             border: 1px solid #4CAF50;
         }
@@ -86,15 +85,22 @@
             <button type="submit" class="btn btn-primary">Assign Rights</button>
         </form>
     </div>
+
     <script>
+    function validateForm() {
+        var textareas = document.querySelectorAll('textarea');
+        for (var i = 0; i < textareas.length; i++) {
+            if (textareas[i].value.trim() === '') {
+                alert('Please fill out the remarks for all personnel.');
+                return false;
+            }
+        }
+        return true;
+    }
+
     function appendPrivilege(lastName) {
-        // Get the selected privilege
         var privilege = document.querySelector(`select[name="privileges_${lastName}"]`).value;
-
-        // Get the remarks textarea
         var remarks = document.querySelector(`textarea[name="remarks_${lastName}"]`);
-
-        // Append the privilege to the remarks
         remarks.value += privilege + "\n";
     }
     </script>
