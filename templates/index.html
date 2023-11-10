@@ -46,12 +46,12 @@
     </style>
 </head>
 <body>
-</html>
     <div class="container">
         <form action="/assign-rights" method="post" onsubmit="return validateForm()">
             <table class="table">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Last Name</th>
                         <th>First Name</th>
                         <th>Position</th>
@@ -63,48 +63,46 @@
                 <tbody>
                     {% for person in personnel %}
                     <tr>
+                        <td>{{ loop.index }}</td>
                         <td>{{ person.Last_Name }}</td>
                         <td>{{ person.First_Name }}</td>
                         <td>{{ person.Position }}</td>
                         <td>{{ person.Email }}</td>
-                        <td class="privileges">
-                            <input type="text" name="privileges_{{ person.Last_Name }}" value="{{ person.Database_Privileges }}">
-                            <button type="button" onclick="appendPrivilegesToRemarks('{{ person.Last_Name }}')">Add More</button>
-                        </td>
-                        <td class="remarks"><input type="text" name="remarks_{{ person.Last_Name }}" value="{{ person.Remarks }}"></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <button class="button" type="submit">Assign Rights</button>
+                                    <td class="privileges">
+                                        <select name="privileges_{{ person.Last_Name }}">
+                                            {% for privilege in assumed_database_access %}
+                                            <option value="{{ privilege }}">{{ privilege }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="button" onclick="appendPrivilegesToRemarks('{{ person.Last_Name }}')">Add More</button>
+                                    </td>
+                                    <td class="remarks"><input type="text" name="remarks_{{ person.Last_Name }}" value="{{ person.Remarks }}"></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+            <button type="submit" class="btn btn-primary">Assign Rights</button>
         </form>
     </div>
     <script>
-        function validateForm() {
-            // Get all privilege inputs
-            var privilegeInputs = document.querySelectorAll('input[name^="privileges_"]');
-
-            // Check if any privilege field is empty
-            for (var i = 0; i < privilegeInputs.length; i++) {
-                if (privilegeInputs[i].value == "") {
-                    alert("Please assign a privilege to every person.");
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         function appendPrivilegesToRemarks(lastName) {
-            // Get the privileges and remarks fields
-            var privilegesField = document.querySelector('input[name="privileges_' + lastName + '"]');
+            // Get the privileges dropdown and remarks field
+            var privilegesDropdown = document.querySelector('select[name="privileges_' + lastName + '"]');
             var remarksField = document.querySelector('input[name="remarks_' + lastName + '"]');
 
-            // Append the privileges to the remarks
-            var newRemarks = remarksField.value + ' ' + privilegesField.value;
+            // Get the selected privilege
+            var selectedPrivilege = privilegesDropdown.options[privilegesDropdown.selectedIndex].value;
+
+            // Append the selected privilege to the remarks
+            var newRemarks = remarksField.value + ' ' + selectedPrivilege;
 
             // Update the remarks field with the new value
             remarksField.value = newRemarks;
+        }
+
+        function validateForm() {
+            // Add form validation code here
+            return true;
         }
     </script>
 </body>
