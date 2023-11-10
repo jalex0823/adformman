@@ -1,43 +1,61 @@
-body {
-    background-color: #f4f4f4;
-    font-family: Arial, sans-serif; /* Set the font for the whole page */
-    color: #4CAF50; /* Set the font color for the whole page */
-}
-.header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
-}
-.header img {
-    height: 50px;
-    margin-right: 20px;
-}
-.header h1 {
-    font-size: 20px;
-}
-.container {
-    margin: 20px auto;
-    background-color: #fff;
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
-    padding: 20px;
-}
-.btn-primary, .thead-dark th {
-    background-color: #4CAF50; /* Set the button and table header color to match the font color */
-}
-/* Add a border to all items except the button */
-.container *:not(.btn) {
-    border: 1px solid #4CAF50;
-}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assign Rights</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif; /* Set the font for the whole page */
+            color: #4CAF50; /* Set the font color for the whole page */
+        }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+        }
+        .header img {
+            height: 50px;
+            margin-right: 20px;
+        }
+        .header h1 {
+            font-size: 20px;
+        }
+        .container {
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+            padding: 20px;
+        }
+        .btn-primary, .thead-dark th {
+            background-color: #4CAF50; /* Set the button and table header color to match the font color */
+        }
+        /* Add a border to all items except the button */
+        .container *:not(.btn) {
+            border: 1px solid #4CAF50;
+        }
     </style>
     <script>
         function appendPrivilege(lastName) {
             var privilege = document.querySelector(`select[name="privileges_${lastName}"]`).value;
             var remarks = document.querySelector(`textarea[name="remarks_${lastName}"]`);
             remarks.value += privilege + "\n";
+        }
+
+        function validateForm() {
+            var personnel = {{ personnel|tojson }};
+            for (var i = 0; i < personnel.length; i++) {
+                var remarks = document.querySelector(`textarea[name="remarks_${personnel[i].Last_Name}"]`).value;
+                if (remarks == "") {
+                    alert("Please fill out the remarks for " + personnel[i].First_Name + " " + personnel[i].Last_Name);
+                    return false;
+                }
+            }
+            return true;
         }
     </script>
 </head>
@@ -71,6 +89,18 @@ body {
         <td>
             <select class="form-control" name="privileges_{{ person.Last_Name }}" required>
                 <option value="">Select...</option>
+                {% for dept in departments %}
+                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
+                {% endfor %}
+            </select>
+            <button type="button" onclick="appendPrivilege('{{ person.Last_Name }}')">Push</button>
+        </td>
+        <td>
+            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" required></textarea>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
                 {% for dept in departments %}
                     <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
                 {% endfor %}
