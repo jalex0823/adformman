@@ -3,7 +3,7 @@
 <head>
     <title>SQL Server Personnel Right Assignments</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
+    <s tyle>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -43,10 +43,7 @@
         .table td.privileges {
             width: 20%;  /* Make the Privileges column smaller */
         }
-        .table td.remarks {
-            width: 80%;  /* Make the Remarks column wider */
-        }
-    </style>
+    </s>
 </head>
 <body>
     <div class="container">
@@ -69,31 +66,45 @@
                         <td>{{ person.First_Name }}</td>
                         <td>{{ person.Position }}</td>
                         <td>{{ person.Email }}</td>
-                        <td class="privileges"><input type="text" name="privileges_{{ person.Last_Name }}" value="{{ person.Database_Privileges }}"></td>
+                        <td class="privileges">
+                            <input type="text" name="privileges_{{ person.Last_Name }}" value="{{ person.Database_Privileges }}">
+                            <button type="button" onclick="appendPrivilegesToRemarks('{{ person.Last_Name }}')">Add More</button>
+                        </td>
                         <td class="remarks"><input type="text" name="remarks_{{ person.Last_Name }}" value="{{ person.Remarks }}"></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <button class="button" type="submit">Add More Rights</button>
+            <button class="button" type="submit">Assign Rights</button>
         </form>
     </div>
-<script>
-function validateForm() {
-    // Get all privilege inputs
-    var privilegeInputs = document.querySelectorAll('input[name^="privileges_"]');
+    <script>
+        function validateForm() {
+            // Get all privilege inputs
+            var privilegeInputs = document.querySelectorAll('input[name^="privileges_"]');
 
-    // Check if any privilege field is empty
-    for (var i = 0; i < privilegeInputs.length; i++) {
-        if (privilegeInputs[i].value == "") {
-            alert("Please assign a privilege to every person.");
-            return false;
+            // Check if any privilege field is empty
+            for (var i = 0; i < privilegeInputs.length; i++) {
+                if (privilegeInputs[i].value == "") {
+                    alert("Please assign a privilege to every person.");
+                    return false;
+                }
+            }
+
+            return true;
         }
-    }
 
-    return true;
-}
-</script>
+        function appendPrivilegesToRemarks(lastName) {
+            // Get the privileges and remarks fields
+            var privilegesField = document.querySelector('input[name="privileges_' + lastName + '"]');
+            var remarksField = document.querySelector('input[name="remarks_' + lastName + '"]');
 
+            // Append the privileges to the remarks
+            var newRemarks = remarksField.value + ' ' + privilegesField.value;
+
+            // Update the remarks field with the new value
+            remarksField.value = newRemarks;
+        }
+    </script>
 </body>
 </html>
