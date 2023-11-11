@@ -34,8 +34,11 @@
         .btn-primary {
             background-color: #4CAF50;
         }
-        textarea {
-            width: 100%;
+        .privileges {
+            width: 20%;
+        }
+        .remarks {
+            width: 30%;
         }
     </style>
 </head>
@@ -54,43 +57,43 @@
                         <th>First Name</th>
                         <th>Position</th>
                         <th>Email</th>
-                        <th>Database Privileges</th>
-                        <th>Remarks</th>
+                        <th class="privileges">Database Privileges</th>
+                        <th class="remarks">Remarks</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {% for person in personnel %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ person.Last_Name }}</td>
-                        <td>{{ person.First_Name }}</td>
-                        <td>{{ person.Position }}</td>
-                        <td>{{ person.Email }}</td>
-                        <td>
-                            <select class="form-control" name="privileges_{{ person.Last_Name }}" required id="privileges_{{ person.Last_Name }}">
-                                <option value="">Select...</option>
-                                {% for dept in departments %}
-                                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="button" onclick="appendPrivilege('privileges_{{ person.Last_Name }}', 'remarks_{{ person.Last_Name }}')">Append Privilege</button>
-                        </td>
-                        <td>
-                            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" required id="remarks_{{ person.Last_Name }}"></textarea>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <button type="submit" class="btn btn-primary">Assign Rights</button>
-        </form>
-    </div>
-    <script>
-        function appendPrivilege(selectId, textareaId) {
-            var selectElement = document.getElementById(selectId);
-            var textarea = document.getElementById(textareaId);
-            textarea.value += selectElement.value + '\n';
-        }
-    </script>
-</body>
-</html>
+                                <tbody>
+                                    {% for person in personnel %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ person.Last_Name }}</td>
+                                        <td>{{ person.First_Name }}</td>
+                                        <td>{{ person.Position }}</td>
+                                        <td>{{ person.Email }}</td>
+                                        <td class="privileges">
+                                            <select class="form-control" name="privileges_{{ person.Last_Name }}" required id="privileges_{{ person.Last_Name }}">
+                                                <option value="">Select...</option>
+                                                {% for dept in departments %}
+                                                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <button type="button" onclick="appendPrivilege('privileges_{{ person.Last_Name }}', 'remarks_{{ person.Last_Name }}')">Append Privilege</button>
+                                        </td>
+                                        <td class="remarks">
+                                            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" required id="remarks_{{ person.Last_Name }}"></textarea>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-primary">Assign Rights</button>
+                        </form>
+                    </div>
+                    <script>
+                        function appendPrivilege(selectId, textareaId) {
+                            var selectElement = document.getElementById(selectId);
+                            var textarea = document.getElementById(textareaId);
+                            textarea.value += selectElement.value + '\n';
+                        }
+                    </script>
+                </body>
+                </html>
