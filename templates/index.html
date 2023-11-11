@@ -1,14 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- ... -->
+    <title>Assign Rights</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            color: #4CAF50;
+        }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+        }
+        .header img {
+            height: 50px;
+            margin-right: 20px;
+        }
+        .header h1 {
+            font-size: 20px;
+        }
+        .container {
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+            padding: 20px;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+        }
+    </style>
 </head>
 <body>
+    <div class="header">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+        <h1>Texas Pipe & Supply IT Department SQL Server Personnel Right Assignments</h1>
+    </div>
     <div class="container">
         <form action="/assign-rights" method="post" onsubmit="return validateForm()">
             <table class="table">
-                <thead>
-                    <!-- ... -->
+                <thead class="thead-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Last Name</th>
+                        <th>First Name</th>
+                        <th>Position</th>
+                        <th>Email</th>
+                        <th>Remarks</th>
+                        <th>Database Privileges</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {% for person in personnel %}
@@ -18,15 +63,17 @@
                         <td>{{ person.First_Name }}</td>
                         <td>{{ person.Position }}</td>
                         <td>{{ person.Email }}</td>
-                        <td class="privileges">
-                            <select name="privileges_{{ person.Last_Name }}">
-                                {% for privilege in person.Assumed_Database_Access %}
-                                <option value="{{ privilege }}">{{ privilege }}</option>
+                        <td>
+                            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" required></textarea>
+                        </td>
+                        <td>
+                            <select class="form-control" name="privileges_{{ person.Last_Name }}" required>
+                                <option value="">Select...</option>
+                                {% for dept in departments %}
+                                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
                                 {% endfor %}
                             </select>
-                            <button type="button" onclick="appendPrivilegesToRemarks('{{ person.Last_Name }}')">Add More</button>
                         </td>
-                        <td class="remarks"><input type="text" name="remarks_{{ person.Last_Name }}" value="{{ person.Remarks }}"></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -34,37 +81,5 @@
             <button type="submit" class="btn btn-primary">Assign Rights</button>
         </form>
     </div>
-    <script>
-        function appendPrivilegesToRemarks(lastName) {
-            // Get the privileges dropdown and remarks field
-            var privilegesDropdown = document.querySelector('select[name="privileges_' + lastName + '"]');
-            var remarksField = document.querySelector('input[name="remarks_' + lastName + '"]');
-
-            // Get the selected privilege
-            var selectedPrivilege = privilegesDropdown.options[privilegesDropdown.selectedIndex].value;
-
-            // Append the selected privilege to the remarks
-            var newRemarks = remarksField.value + ' ' + selectedPrivilege;
-
-            // Update the remarks field with the new value
-            remarksField.value = newRemarks;
-        }
-        function validateForm() {
-            // Get all the remarks fields
-            var remarksFields = document.querySelectorAll('input[name^="remarks_"]');
-
-            // Check each field
-            for (var i = 0; i < remarksFields.length; i++) {
-                if (remarksFields[i].value.trim() === '') {
-                    // If a field is empty, show an alert and prevent form submission
-                    alert('Please fill out all remarks fields.');
-                    return false;
-                }
-            }
-
-            // If all fields are filled, allow form submission
-            return true;
-        }
-    </script>
 </body>
 </html>
