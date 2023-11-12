@@ -78,7 +78,7 @@
                                         <td>{{ person.Position }}</td>
                                         <td>{{ person.Email }}</td>
                                         <td class="privileges">
-                                            <select class="form-control" name="privileges_{{ person.Last_Name }}" required id="privileges_{{ person.Last_Name }}">
+                                            <select class="form-control" name="privileges_{{ person.Last_Name }}" id="privileges_{{ person.Last_Name }}">
                                                 <option value="">Select...</option>
                                                 {% for dept in departments %}
                                                     <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
@@ -87,7 +87,7 @@
                                             <button type="button" onclick="appendPrivilege('privileges_{{ person.Last_Name }}', 'remarks_{{ person.Last_Name }}')">Append Privilege</button>
                                         </td>
                                         <td class="remarks">
-                                            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" required id="remarks_{{ person.Last_Name }}"></textarea>
+                                            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" id="remarks_{{ person.Last_Name }}"></textarea>
                                         </td>
                                     </tr>
                                     {% endfor %}
