@@ -4,104 +4,119 @@
     <title>Assign Rights</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <style>
-        body {
-            background-color: #f4f4f4;
-            font-family: Arial, sans-serif;
-            color: #4CAF50;
-        }
+        /* CSS styles */
         .header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
+            background-color: #f8f9fa;
             padding: 20px;
-            background-color: #fff; /* Changed back to white */
-            color: #4CAF50; /* Text color set to green */
-            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
-        }
-
-
-        .header img {
-            height: 50px;
-            margin-right: 20px;
-        }
-        .header h1 {
-            font-size: 20px;
+            text-align: center;
         }
         .container {
-            margin: 20px auto;
-            background-color: #4CAF50; /* Changed to green */
-            box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
-            padding: 20px;
+            margin-top: 20px;
         }
-        .btn-primary {
-            background-color: #343a40; /* Changed to dark gray */
-        }
-        .privileges {
-            width: 20%;
-        }
-        .remarks {
-            width: 30%;
-        }
-        .thead-dark {
-            background-color: #4CAF50; /* Changed to green */
-            color: #fff; /* Text color set to white for contrast */
-        }
-    
     </style>
 </head>
 <body>
-    <div class="header">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
-        <h1>Texas Pipe & Supply IT Department SQL Server Personnel Right Assignments</h1>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </li>
+        </ul>
     </div>
-    <div class="container">
-        <form action="/assign-rights" method="post" onsubmit="return validateForm()">
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>Last Name</th>
-                        <th>First Name</th>
-                        <th>Position</th>
-                        <th>Email</th>
-                        <th class="privileges">Database Privileges</th>
-                        <th class="remarks">Remarks</th>
-                    </tr>
-                </thead>
-                                <tbody>
-                                    {% for person in personnel %}
-                                    <tr>
-                                        <td>{{ loop.index }}</td>
-                                        <td>{{ person.Last_Name }}</td>
-                                        <td>{{ person.First_Name }}</td>
-                                        <td>{{ person.Position }}</td>
-                                        <td>{{ person.Email }}</td>
-                                        <td class="privileges">
-                                            <select class="form-control" name="privileges_{{ person.Last_Name }}" id="privileges_{{ person.Last_Name }}">
-                                                <option value="">Select...</option>
-                                                {% for dept in departments %}
-                                                    <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            <button type="button" onclick="appendPrivilege('privileges_{{ person.Last_Name }}', 'remarks_{{ person.Last_Name }}')">Append Privilege</button>
-                                        </td>
-                                        <td class="remarks">
-                                            <textarea class="form-control" name="remarks_{{ person.Last_Name }}" id="remarks_{{ person.Last_Name }}"></textarea>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            <button type="submit" class="btn btn-primary">Assign Rights</button>
-                        </form>
-                    </div>
-                    <script>
-                        function appendPrivilege(selectId, textareaId) {
-                            var selectElement = document.getElementById(selectId);
-                            var textarea = document.getElementById(textareaId);
-                            textarea.value += selectElement.value + '\n';
-                        }
-                    </script>
-                </body>
-                </html>
+</nav>
+<div class="header">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+    <h1>Texas Pipe & Supply IT Department SQL Server Personnel Right Assignments</h1>
+</div>
+<div class="container">
+<form action="{{ url_for('assign_rights') }}" method="post" onsubmit="return validateForm()">
+    <!-- Dropdown for user selection -->
+    <select name="user" id="user">
+        <option value="">Select a user</option>
+        <option value="Gene">Gene</option>
+        <option value="Colby">Colby</option>
+        <option value="Kul">Kul</option>
+    </select>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Last Name</th>
+                    <th>First Name</th>
+                    <th>Position</th>
+                    <th>Email</th>
+                    <th class="privileges">Database Privileges</th>
+                    <th class="remarks">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for person in personnel %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ person.Last_Name }}</td>
+                    <td>{{ person.First_Name }}</td>
+                    <td>{{ person.Position }}</td>
+                    <td>{{ person.Email }}</td>
+                    <td class="privileges">
+                        <select class="form-control" name="privileges_{{ person.Last_Name }}" id="privileges_{{ person.Last_Name }}">
+                            <option value="">Select...</option>
+                            {% for dept in departments %}
+                                <option value="{{ dept.Assumed_Database_Access }}">{{ dept.Assumed_Database_Access }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" onclick="appendPrivilege('privileges_{{ person.Last_Name }}', 'remarks_{{ person.Last_Name }}')">Append Privilege</button>
+                    </td>
+                    <td class="remarks">
+                        <textarea class="form-control" name="remarks_{{ person.Last_Name }}" id="remarks_{{ person.Last_Name }}"></textarea>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Assign Rights</button>
+    </form>
+    </div>
+    <script>
+    function validateForm() {
+        var user = document.getElementById("user");
+        if (user.value == "") {
+            alert("Please select a user");
+            return false;
+        }
+        return true;
+    }
+
+    function appendPrivilege(selectId, textareaId) {
+        var selectElement = document.getElementById(selectId);
+        var textarea = document.getElementById(textareaId);
+        textarea.value += selectElement.value + '\n';
+    }
+
+    function checkAllCheckboxes() {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = true;
+        }
+    }
+    </script>
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">Place sticky footer content here.</span>
+        </div>
+    </footer>
+    </body>
+    </html>

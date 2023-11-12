@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, session
+from datetime import datetime
 import os
 from flask_sqlalchemy import SQLAlchemy
 
@@ -31,6 +32,9 @@ def home():
 
 @app.route('/assign-rights', methods=['POST'])
 def assign_rights():
+    user = request.form.get('user')  # Get the user from the form
+    timestamp = datetime.now()  # Get the current timestamp
+
     for person in ITPersonnel.query.all():
         last_name = person.Last_Name
         privileges = request.form.get(f'privileges_{last_name}')
@@ -39,6 +43,8 @@ def assign_rights():
         if remarks:
             person.Remarks = remarks
     db.session.commit()
+
+    print(f'Form submitted by {user} at {timestamp}')  # Print the user and timestamp
 
     return 'Rights assigned successfully'
 
