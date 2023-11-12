@@ -101,9 +101,10 @@
     }
 
     function appendPrivilege(selectId, textareaId) {
+        var user = document.getElementById("user").value;  // Get the user's name
         var selectElement = document.getElementById(selectId);
         var textarea = document.getElementById(textareaId);
-        textarea.value += selectElement.value + '\n';
+        textarea.value += selectElement.value + ' ' + user + '\n';  // Append the selected value and the user's name
     }
 
     function checkAllCheckboxes() {
