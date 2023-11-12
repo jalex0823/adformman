@@ -2,33 +2,19 @@ from flask import Flask, request, render_template, session
 from datetime import datetime
 import os
 from flask_sqlalchemy import SQLAlchemy
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 db = SQLAlchemy(app)
 
-class ITDepartments(db.Model):
-    __tablename__ = 'ITDepartments'
-    Department = db.Column(db.String(255), primary_key=True)
-    Responsibilities = db.Column(db.String(255), nullable=False)
-    Assumed_Database_Access = db.Column(db.String(255), nullable=False)
-    Remarks = db.Column(db.String(255), nullable=True)
-    AG_ID = db.Column(db.String(255), nullable=True)
-
-class ITPersonnel(db.Model):
-    __tablename__ = 'ITPersonnel'
-    Last_Name = db.Column(db.String(255), primary_key=True)
-    First_Name = db.Column(db.String(255), nullable=False)
-    Position = db.Column(db.String(255), nullable=False)
-    Email = db.Column(db.String(255), nullable=False)
-    Database_Privileges = db.Column('Database Privileges', db.String(255), nullable=True)
-    Remarks = db.Column(db.String(255), nullable=True)
+# Your model definitions go here
 
 @app.route('/')
 def home():
-    personnel = ITPersonnel.query.all()
-    departments = ITDepartments.query.all()
-    return render_template('index.html', personnel=personnel, departments=departments)
+    # Your home route code goes here
 
 @app.route('/assign-rights', methods=['POST'])
 def assign_rights():
@@ -45,6 +31,21 @@ def assign_rights():
     db.session.commit()
 
     print(f'Form submitted by {user} at {timestamp}')  # Print the user and timestamp
+
+    # Send email
+    msg = MIMEMultipart()
+    msg['From'] = 'jalex0823@gmail.com'
+    msg['To'] = 'jefferya@texaspipe.com'
+    msg['Subject'] = 'Information Submitted to AD Databases'
+    body = f'The user {user} has submitted information to the AD Databases at {timestamp}.'
+    msg.attach(MIMEText(body, 'plain'))
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login('jalex0823@gmail.com', 'Disneychannel911!')
+    text = msg.as_string()
+    server.sendmail('jalex0823@gmail.com', 'jefferya@texaspipe.com', text)
+    server.quit()
 
     return 'Rights assigned successfully'
 
