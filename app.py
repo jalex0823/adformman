@@ -23,7 +23,6 @@ class ITPersonnel(db.Model):
     Email = db.Column(db.String(255), nullable=False)
     Database_Privileges = db.Column('Database Privileges', db.String(255), nullable=True)
     Remarks = db.Column(db.String(255), nullable=True)
-
 @app.route('/')
 def home():
     personnel = ITPersonnel.query.all()
@@ -32,7 +31,6 @@ def home():
 
 @app.route('/assign-rights', methods=['POST'])
 def assign_rights():
-    user = request.form.get('user')  # Get the user from the form
     timestamp = datetime.now()  # Get the current timestamp
 
     for person in ITPersonnel.query.all():
@@ -40,11 +38,10 @@ def assign_rights():
         privileges = request.form.get(f'privileges_{last_name}')
         remarks = request.form.get(f'remarks_{last_name}')
         if privileges: person.Database_Privileges = privileges
-        if remarks:
-            person.Remarks = remarks
+        if remarks: person.Remarks = remarks
     db.session.commit()
 
-    print(f'Form submitted by {user} at {timestamp}')  # Print the user and timestamp
+    print(f'Form submitted at {timestamp}')  # Print the timestamp
 
     return 'Rights assigned successfully'
 
